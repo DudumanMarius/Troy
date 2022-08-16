@@ -132,3 +132,8 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 ASGI_APPLICATION = 'Troy.asgi.application'
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
