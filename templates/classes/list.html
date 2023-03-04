@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static custom_tags %}
+
+{% block title %}Troy - Classes{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="row">
+            <div class="col-10">
+                <h1 class="margin-1">Number of classes: <span class="badge turquoise">{{ object_list.count }}</span></h1>
+            </div>
+            <div class="col-2 align-self-center">
+                <button class="btn navbar-btn border-2 turquoise float-end" id="createClassBtn"><i class="fa fa-plus" aria-hidden="true"></i> Create Class</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card-deck">
+                {% for class in object_list %}
+                    <div class="card text-white bg-dark border-light" id="class-{{ class.pk }}">
+                        <div class="card-header border-light class-initials">
+                            {{ class.get_short_name }}
+                        </div>
+                        <div class="card-body border-light">
+                            <h4 class="card-title">{{ class.name }}</h4>
+                            <small class="card-text-shortened">{{ class.description }}</small>
+                        </div>
+                        <div class="card-footer border-light">
+                            <small>Number of students: {{ class.number_of_members }}</small>
+                        </div>
+                        <div class="card-footer border-light">
+                            <small>Teacher: <img src="{{ class.teacher.avatar.url }}" class="user-icon" alt="Icon"> {{ class.teacher }}</small>
+                        </div>
+                        <div class="card-footer border-light">
+                            <div class="float-start">
+                                <small>Started on: {{ class.started_on }}</small>
+                            </div>
+                            <div class="float-end">
+                                {% is_member user_pk=request.user.pk class_pk=class.pk as member %}
+                                {% if not member %}
+                                    <button class="btn btn-sm turquoise border-2" onclick="location.href = '{% url "classes:join" class.pk %}'"><i class="fa fa-plus" aria-hidden="true"></i> Join</button>
+                                {% else %}
+                                    <button class="btn btn-sm turquoise border-2" onclick="location.href = '{% url "classes:view" class.pk %}'"><i class="fa fa-folder-open" aria-hidden="true"></i> Access</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p><strong>The classes you are a member of don't have any lessons.</strong></p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#createClassBtn").on("click", function () {
+                location.href = "{{ create_class_url }}";
+            });
+        });
+    </script>
+{% endblock %}s

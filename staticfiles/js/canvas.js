@@ -15,7 +15,6 @@ $(document).ready(function() {
     $(".clr").on("click", function (ev) {
         ev.preventDefault();
         let btn = ev.target;
-        console.log("Culoarea aleasa este " + btn.dataset.clr);
         ctx.strokeStyle = btn.dataset.clr;
     });
 
@@ -24,7 +23,8 @@ $(document).ready(function() {
     });
 
     $("#addImageBtn").on("click", function () {
-        tinymce.activeEditor.insertContent('<img alt="Test" height="250" width="250" src="' + canvas.toDataURL("imag/png") + '"/>');
+        const content = tinymce.activeEditor.getContent();
+        tinymce.activeEditor.setContent(content + '<br><img alt="Image" style="display: block; margin-left: auto; margin-right: auto;" height="250" width="250" src="' + canvas.toDataURL("imag/png") + '"/><br>');
     });
 
     $("#penSize").on("input rightnow", function () {
@@ -39,11 +39,11 @@ $(document).ready(function() {
     canvas_parent.on("mousemove", (e) => {
         if(prevX == null || prevY == null || !draw){
             prevX = e.clientX;
-            prevY = e.clientY;
+            prevY = e.clientY - 56.5;
             return;
         }
         let currentX = e.clientX;
-        let currentY = e.clientY;
+        let currentY = e.clientY - 56.5;
 
         ctx.beginPath();
         ctx.moveTo(prevX, prevY);

@@ -1,15 +1,11 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
-from dotenv import load_dotenv
 from deepgram import Deepgram
 from typing import Dict
-
-import os
-
-load_dotenv()
+from django.conf import settings
 
 
 class TranscriptConsumer(AsyncWebsocketConsumer):
-    dg_client = Deepgram(os.getenv('DEEPGRAM_API_KEY'))
+    dg_client = Deepgram(settings.DEEPGRAM_API_KEY)
 
     def __init__(self, *args, **kwargs):
         super().__init__(args, kwargs)
@@ -26,11 +22,11 @@ class TranscriptConsumer(AsyncWebsocketConsumer):
         try:
             self.socket = await self.dg_client.transcription.live(
                 {'punctuate': True, 'interim_results': False})
-            self.socket.registerHandler(self.socket.event.CLOSE,
-                                        lambda c: print(
-                                            f'Connection closed with code {c}.'))
-            self.socket.registerHandler(self.socket.event.TRANSCRIPT_RECEIVED,
-                                        self.get_transcript)
+            self.socket.registerHandler(
+                self.socket.event.CLOSE, lambda c: print(
+                    f'Connection closed with code {c}.'))
+            self.socket.registerHandler(
+                self.socket.event.TRANSCRIPT_RECEIVED, self.get_transcript)
 
         except Exception as e:
             raise Exception(f'Could not open socket: {e}')

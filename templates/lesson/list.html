@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Troy - Lessons{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="row">
+            <div class="col-10">
+                <h1 class="margin-1">Number of lessons: <span class="badge turquoise">{{ object_list.count }}</span></h1>
+            </div>
+            <div class="col-2 align-self-center">
+                <button class="btn navbar-btn border-2 turquoise float-end" id="createClassBtn"><i class="fa fa-plus" aria-hidden="true"></i> Create Lesson</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card-deck">
+                {% for lesson in object_list %}
+                    <div class="card text-white bg-dark border-light" id="class-{{ lesson.pk }}">
+                        <div class="card-header border-light class-initials">
+                            {{ lesson.get_short_title }}
+                        </div>
+                        <div class="card-body border-light">
+                            <h4 class="card-title">{{ lesson.title }}</h4>
+                            <h6 class="card-title">Class: {{ lesson.teaching_class }}</h6>
+                        </div>
+                        <div class="card-footer border-light">
+                            <small>Created on: {{ lesson.date_created }}</small><br>
+                            <small>Last edit on: {{ lesson.date_edited }}</small>
+                        </div>
+                        <div class="card-footer border-light">
+                            <div class="float-end">
+                                {% if lesson.user == request.user %}
+                                    <button class="btn btn-sm turquoise border-2" onclick="location.href = '{% url "lessons:edit" lesson.pk %}'"><i class="fa fa-edit" aria-hidden="true"></i> Edit</button>
+                                {% endif %}
+                                <button class="btn btn-sm turquoise border-2" onclick="location.href = '{% url "lessons:view" lesson.pk %}'"><i class="fa fa-folder-open" aria-hidden="true"></i> Access</button>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p><strong>The classes you are a member of don't have any lessons.</strong></p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#createClassBtn").on("click", function () {
+                location.href = "{{ create_lesson_url }}";
+            });
+        });
+    </script>
+{% endblock %}s

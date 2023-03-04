@@ -2,28 +2,27 @@
 {% load static %}
 
 {% block style %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock %}
 
-{% block title %}Troy - Lesson{% endblock %}
+{% block title %}Troy Edit - {{ object.title }}{% endblock %}
 
 {% block content %}
     <div class="row h-75">
-        <div class="col-md-5 border border-5 border-secondary h-100 p-0">
+        <div class="col-md-5 border border-1 border-secondary h-100 p-0">
             <canvas id="canvas">
                 <p class="noscript">We're sorry, this web application is currently not supported with your browser. Please use an alternate browser or download a supported <br />browser. Supported browsers: <a href="http://www.google.com/chrome">Google Chrome</a>, <a href="http://www.opera.com">Opera</a>, <a href="http://www.mozilla.com">Firefox</a>, <a href="http://www.apple.com/safari">Safari</a>, <br />and <a href="http://www.konqueror.org">Konqueror</a>. Also make sure your JavaScript is enabled.</p>
             </canvas>
         </div>
-        <div class="col-md-2 border border-5 border-secondary h-100">
+        <div class="col-md-2 border border-1 border-secondary h-100">
             <div class="row justify-content-center h-50">
                 <div class="row justify-content-center" id="color-options">
                     <p class="text-md-center fw-bolder">- Color -</p>
                     <!-- We will be accessing the data-clr in JQuery -->
-                    <button type="button" class="btn btn-dark btn-circle btn-outline-dark btn-sm m-1 clr" data-clr="#000"></button>
-                    <button type="button" class="btn btn-danger btn-circle btn-outline-dark btn-sm m-1 clr" data-clr="#EF626C"></button>
-                    <button type="button" class="btn btn-warning btn-circle btn-outline-dark btn-sm m-1 clr" data-clr="#fdec03"></button>
-                    <button type="button" class="btn btn-success btn-circle btn-outline-dark btn-sm m-1 clr" data-clr="#24d102"></button>
-                    <button type="button" class="btn btn-light btn-circle btn-outline-dark btn-sm m-1 clr" data-clr="#fff"></button>
+                    <button type="button" class="btn btn-dark btn-circle border border-1 border-dark btn-sm m-1 clr" data-clr="#000"></button>
+                    <button type="button" class="btn btn-danger btn-circle border border-1 border-dark btn-sm m-1 clr" data-clr="#EF626C"></button>
+                    <button type="button" class="btn btn-warning btn-circle border border-1 border-dark btn-sm m-1 clr" data-clr="#fdec03"></button>
+                    <button type="button" class="btn btn-success btn-circle border border-1 border-dark btn-sm m-1 clr" data-clr="#24d102"></button>
+                    <button type="button" class="btn btn-light btn-circle border border-1 border-dark btn-sm m-1 clr" data-clr="#fff"></button>
                 </div>
                 <div class="row justify-content-center">
                     <p class="text-md-center fw-bolder">- Pen size -</p>
@@ -37,6 +36,7 @@
                 <div class="row justify-content-center m-1">
                     <button type="button" class="btn btn-primary btn-sm" id="addImageBtn"><i class="fa fa-image" aria-hidden="true"></i> Add image</button>
                 </div>
+                <hr>
                 <div class="row justify-content-center m-1">
                     <figure class="text-center">
                         <blockquote class="blockquote">
@@ -48,6 +48,7 @@
                     </figure>
                 </div>
             </div>
+            <hr>
             <div class="row h-25 justify-content-center">
                 <div class="row justify-content-center m-1">
                     <button type="button" class="btn btn-success btn-sm" id="listenBtn"><i class="fa fa-microphone" aria-hidden="true"></i> Listen</button>
@@ -62,18 +63,24 @@
                     <button type="button" class="btn btn-secondary btn-sm" id="clearTextBtn"><i class="fa fa-trash" aria-hidden="true"></i> Clear transcribed text</button>
                 </div>
             </div>
+            <hr>
+            <div class="row justify-content-center">
+                <div class="row justify-content-center m-1">
+                    <button type="button" class="btn btn-success btn-sm" id="saveBtn"><i class="fa fa-save" aria-hidden="true"></i> Save</button>
+                </div>
+            </div>
         </div>
-        <div class="col-md-5 border border-5 border-secondary p-0">
-            <textarea id="editor" class="h-100"></textarea>
+        <div class="col-md-5 border border-1 border-secondary p-0">
+            <textarea id="editor" class="h-100">{{ object.content }}</textarea>
         </div>
     </div>
-    <div class="row h-25 border border-5 border-secondary p-0">
+    <div class="row h-25 border border-1 border-secondary p-0">
         <textarea class="form-control h-100" placeholder="Transcribed text will be placed here...." id="transcribedText" disabled></textarea>
     </div>
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
         <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
-                <img src="..." class="rounded me-2" alt="...">
+                <img src="{% static 'img/logo-icon.png' %}" class="rounded me-2" alt="logo">
                 <strong class="me-auto">Troy</strong>
                 <small id="toastTime">hmm</small>
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -93,26 +100,44 @@
     <script>
         tinymce.init({
             selector: '#editor',
-            plugins: 'a11ychecker advcode casechange export formatpainter image editimage linkchecker autolink lists checklist media mediaembed pageembed permanentpen powerpaste table advtable tableofcontents tinycomments tinymcespellchecker',
-            toolbar: 'a11ycheck addcomment showcomments casechange checklist code export formatpainter image editimage pageembed permanentpen table tableofcontents',
             toolbar_mode: 'floating',
-            tinycomments_mode: 'embedded',
-            tinycomments_author: 'Author name',
             resize: false
         })
+    </script>
+    <script>
+        $(document).ready(function() {
+            let editor = tinymce.get('editor');
 
-        $("#addTextBtn").on("click", function () {
-            var editor = tinymce.get('editor');
-            var content = editor.getContent();
-            let text = $("#transcribedText").val();
-            if(text !== "") {
-                editor.setContent(content + text);
+            $("#addTextBtn").on("click", function () {
+                const content = editor.getContent();
+                let text = $("#transcribedText").val();
+                if(text !== "") {
+                    editor.setContent(content + text);
+                    $("#transcribedText").val("");
+                }
+            });
+
+            $("#clearTextBtn").on("click", function () {
                 $("#transcribedText").val("");
-            }
-        });
+            });
 
-        $("#clearTextBtn").on("click", function () {
-            $("#transcribedText").val("");
+            function save() {
+                const content = editor.getContent();
+                if (content) {
+                    $.ajax({
+                        url: "{% url 'lessons:save' 0 %}".replace("0", {{ object.pk }}),
+                        method: "POST",
+                        data: {
+                            "content": content
+                        },
+                        success: function (response) {
+                            console.log(response)
+                        }
+                    })
+                }
+            }
+            $("#saveBtn").on("click", save);
+            setInterval(save, 30 * 1000);
         });
     </script>
 {% endblock %}

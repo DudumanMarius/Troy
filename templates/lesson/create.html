@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags crispy_forms_filters %}
+
+{% block title %}Troy - Create Lesson{% endblock %}
+
+{% block content %}
+    <div class="container centered-div">
+        <div class="row margin-1">
+            <div class="row margin-1">
+                <h3>Create Lesson</h3>
+            </div>
+            <div class="row margin-1">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="pull-right margin-1-top">
+                        <button type="submit" class="btn turquoise border-2">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}{% endblock %}

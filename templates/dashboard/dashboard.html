@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Troy - Dashboard{% endblock %}
+
+{% block content %}
+    <div class="centered-div">
+        <div class="row">
+            <img src="{% static 'img/logo.png' %}" alt="Troy">
+        </div>
+        <div class="row">
+            <figure class="text-center">
+                <blockquote class="blockquote">
+                    <p>"The beautiful thing about learning is that nobody can take it away from you."</p>
+                </blockquote>
+                <figcaption class="blockquote-footer">
+                    <cite title="Source Title">B.B. King</cite>
+                </figcaption>
+            </figure>
+        </div>
+    </div>
+{% endblock %}

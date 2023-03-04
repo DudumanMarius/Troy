@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 
+AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,13 +24,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-zb#nvgeyiv7&4%remk^d^8067+ij@ipxpqieorb%(8o^vf!zcu'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 
 # Application definition
@@ -38,10 +46,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bootstrap5',
     'channels',
-    'transcript'
+    'bootstrap5',
+    'crispy_forms',
+    'transcript',
+    'users',
+    'classes'
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -74,16 +87,33 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Troy.wsgi.application'
 
+from django.contrib.messages import constants as messages
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+MESSAGE_TAGS = {
+    messages.INFO: "alert-info",
+    messages.SUCCESS: "alert-success",
+    messages.ERROR: "alert-error",
+    messages.WARNING: "alert-warning"
+}
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+
+DATABASE_NAME = ""
+DATABASE_USER = ""
+DATABASE_PORT = ""
+DATABASE_HOST = ""
+DATABASE_PASS = ""
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': DATABASE_NAME,
+        'USER': DATABASE_USER,
+        'PASSWORD': DATABASE_PASS,
+        'HOST': DATABASE_HOST,
+        'PORT': DATABASE_PORT,
     }
 }
+
 
 
 # Password validation
@@ -127,6 +157,11 @@ STATICFILES_DIRS = [
     BASE_DIR / "staticfiles",
 ]
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_URL = 'uploads/'
+
+DEEPGRAM_API_KEY = ""
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -135,6 +170,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ASGI_APPLICATION = 'Troy.asgi.application'
 
 try:
-    from local_settings import *
+    from .local_settings import *
 except ImportError:
     pass
