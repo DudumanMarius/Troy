@@ -45,9 +45,7 @@ class LessonsListView(LoginRequiredMixin, ListView):
     login_url = reverse_lazy("users:login")
 
     def get_queryset(self):
-        classes_pk = list(Member.objects.filter(
-            user=self.request.user).values_list(
-            "teaching_class__pk", flat=True))
+        classes_pk = list(Member.objects.filter(user=self.request.user).values_list("teaching_class__pk", flat=True))
         filters = [Q(user=self.request.user) | Q(
             teaching_class__pk__in=classes_pk)]
         return Lesson.objects.filter(*filters)

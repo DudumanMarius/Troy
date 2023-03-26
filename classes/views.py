@@ -88,8 +88,7 @@ class ClassView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["lessons"] = Lesson.objects.filter(
-            teaching_class=self.object).order_by("-pk")
+        context["lessons"] = Lesson.objects.filter(teaching_class=self.object).order_by("-pk")
         return context
 
 
